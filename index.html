@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Предписатель</title>
+    <style>
+      :root {
+        --bg: #020405;
+        --cyan: #25f7ff;
+        --cyan-soft: rgba(37, 247, 255, 0.44);
+        --cyan-dim: rgba(37, 247, 255, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 50% 28%, rgba(37, 247, 255, 0.12), transparent 38%),
+          linear-gradient(180deg, #07090a 0%, var(--bg) 48%, #000 100%);
+        color: var(--cyan);
+        font-family: "Courier New", Consolas, monospace;
+        overflow: hidden;
+      }
+
+      .app {
+        width: min(100vw, 430px);
+        min-height: 100svh;
+        margin: 0 auto;
+        padding: max(22px, env(safe-area-inset-top)) 12px max(22px, env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-rows: 1fr auto;
+        align-items: center;
+        gap: 26px;
+        position: relative;
+      }
+
+      .app::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: radial-gradient(circle at center, #000 20%, transparent 72%);
+      }
+
+      .pager {
+        width: min(98vw, 420px);
+        margin: auto;
+        position: relative;
+        filter: drop-shadow(0 28px 34px rgba(0, 0, 0, 0.7));
+        transform: rotate(-4deg);
+        animation: deviceIdle 4.8s ease-in-out infinite;
+      }
+
+      .pager__top {
+        width: 60%;
+        height: 22px;
+        margin-left: 22%;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 0 18px;
+        background:
+          linear-gradient(96deg, transparent 13%, rgba(20, 22, 21, 0.35) 13% 17%, transparent 17%),
+          linear-gradient(130deg, #f0ecd7, #8c8879);
+        border: 4px solid #090b0c;
+        border-bottom: 0;
+        clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+      }
+
+      .pager__top span {
+        width: 34px;
+        height: 6px;
+        background: rgba(5, 8, 8, 0.7);
+        transform: skewX(-24deg);
+      }
+
+      .pager__body {
+        position: relative;
+        z-index: 2;
+        padding: 18px 18px 20px;
+        background:
+          radial-gradient(circle at 15% 82%, rgba(0, 0, 0, 0.42) 0 2px, transparent 3px),
+          radial-gradient(circle at 82% 18%, rgba(0, 0, 0, 0.3) 0 1px, transparent 2px),
+          linear-gradient(116deg, transparent 0 10%, rgba(14, 15, 14, 0.5) 10% 12%, rgba(255, 255, 255, 0.45) 12% 17%, transparent 17%),
+          linear-gradient(24deg, transparent 0 62%, rgba(0, 0, 0, 0.28) 62% 66%, rgba(244, 239, 219, 0.44) 66% 70%, transparent 70%),
+          linear-gradient(155deg, #efead7 0%, #9d9a8d 38%, #eee6cf 39%, #5d5b52 100%);
+        border: 7px solid #050607;
+        clip-path: polygon(8% 0, 84% 0, 96% 20%, 94% 100%, 11% 100%, 0 70%, 0 14%);
+      }
+
+      .pager__body::before,
+      .pager__body::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .pager__body::before {
+        inset: 8px 14px;
+        opacity: 0.75;
+        background:
+          linear-gradient(122deg, transparent 0 18%, rgba(5, 6, 6, 0.42) 18% 19%, transparent 19% 100%),
+          linear-gradient(170deg, transparent 0 33%, rgba(255, 255, 255, 0.34) 33% 34%, transparent 34% 100%),
+          linear-gradient(22deg, transparent 0 76%, rgba(6, 7, 7, 0.5) 76% 78%, transparent 78% 100%);
+        clip-path: polygon(7% 0, 84% 0, 96% 20%, 93% 100%, 11% 100%, 0 70%, 0 14%);
+      }
+
+      .pager__body::after {
+        right: 18px;
+        bottom: 14px;
+        width: 72px;
+        height: 18px;
+        background:
+          linear-gradient(152deg, transparent 0 20%, rgba(5, 6, 6, 0.55) 20% 30%, transparent 30%),
+          linear-gradient(174deg, transparent 0 57%, rgba(255, 255, 255, 0.4) 57% 66%, transparent 66%);
+        transform: skewX(-22deg);
+      }
+
+      .pager__antenna {
+        position: absolute;
+        z-index: 4;
+        top: 23px;
+        right: -2px;
+        width: 92px;
+        height: 60px;
+        background: #050607;
+        clip-path: polygon(0 0, 66% 0, 92% 24%, 100% 58%, 84% 58%, 78% 100%, 28% 100%, 18% 62%, 0 52%);
+        pointer-events: none;
+      }
+
+      .pager__antenna::before {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        background:
+          linear-gradient(112deg, transparent 0 32%, rgba(8, 9, 9, 0.45) 32% 38%, transparent 38%),
+          linear-gradient(154deg, #eee8d1 0%, #c1bcaa 42%, #767468 100%);
+        clip-path: polygon(0 0, 64% 0, 90% 24%, 100% 56%, 82% 56%, 76% 100%, 30% 100%, 20% 62%, 0 52%);
+      }
+
+      .pager__antenna::after {
+        content: "";
+        position: absolute;
+        right: 14px;
+        top: 16px;
+        width: 32px;
+        height: 8px;
+        background: rgba(5, 6, 6, 0.62);
+        transform: rotate(28deg);
+      }
+
+      .pager__bevel {
+        position: relative;
+        z-index: 2;
+        padding: 11px 12px;
+        background:
+          linear-gradient(118deg, transparent 0 8%, rgba(255, 255, 255, 0.48) 8% 12%, transparent 12%),
+          linear-gradient(24deg, transparent 0 72%, rgba(0, 0, 0, 0.34) 72% 76%, transparent 76%),
+          linear-gradient(135deg, #151819, #f5f0db 16%, #151819 17% 20%, #d7d0bd 20% 100%);
+        border: 5px solid #080a0a;
+        transform: skewX(-8deg);
+      }
+
+      .screen {
+        height: clamp(156px, 40vw, 188px);
+        padding: 14px 15px 13px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(37, 247, 255, 0.16), transparent 28%),
+          linear-gradient(180deg, #010909 0%, #020303 100%);
+        border: 3px solid #111;
+        box-shadow:
+          inset 0 0 0 2px rgba(37, 247, 255, 0.1),
+          inset 0 0 28px rgba(37, 247, 255, 0.2),
+          0 0 24px rgba(37, 247, 255, 0.24);
+        transform: skewX(8deg);
+      }
+
+      .screen__noise,
+      .screen__scanlines {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .screen__noise {
+        opacity: 0.14;
+        background-image:
+          radial-gradient(circle at 12% 24%, #fff 0 1px, transparent 1px),
+          radial-gradient(circle at 62% 72%, #fff 0 1px, transparent 1px),
+          radial-gradient(circle at 82% 18%, #fff 0 1px, transparent 1px);
+        background-size: 31px 29px, 43px 37px, 53px 47px;
+        animation: jitter 650ms steps(2) infinite;
+      }
+
+      .screen__scanlines {
+        background: repeating-linear-gradient(
+          180deg,
+          rgba(37, 247, 255, 0.06) 0,
+          rgba(37, 247, 255, 0.06) 1px,
+          transparent 1px,
+          transparent 5px
+        );
+      }
+
+      .screen__label {
+        margin: 0 0 10px;
+        color: rgba(37, 247, 255, 0.62);
+        font-size: 0.72rem;
+        line-height: 1.35;
+        text-shadow: 0 0 8px var(--cyan-soft);
+      }
+
+      .screen__text {
+        height: calc(100% - 31px);
+        color: var(--cyan);
+        font-size: clamp(0.9rem, 3.85vw, 1.08rem);
+        line-height: 1.26;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+        text-transform: uppercase;
+        text-shadow:
+          0 0 5px rgba(37, 247, 255, 0.95),
+          0 0 16px var(--cyan-soft);
+        scrollbar-width: none;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen__text::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+
+      .screen__text.is-waiting {
+        height: calc(100% - 18px);
+        margin-top: -2px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        font-size: clamp(1.08rem, 4.7vw, 1.34rem);
+        line-height: 1.18;
+        overflow-wrap: normal;
+        word-break: normal;
+        text-wrap: balance;
+        animation: blinkText 1.15s steps(2) infinite;
+      }
+
+      .screen__text.is-error {
+        color: #ff3030;
+        text-shadow:
+          0 0 5px rgba(255, 48, 48, 0.95),
+          0 0 18px rgba(255, 48, 48, 0.52);
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 0.74em;
+        height: 1em;
+        margin-left: 3px;
+        vertical-align: -0.13em;
+        background: var(--cyan);
+        box-shadow: 0 0 12px var(--cyan);
+        animation: blinkCursor 740ms steps(2) infinite;
+      }
+
+      .pager__bottom {
+        width: 70%;
+        height: 23px;
+        margin-left: 12%;
+        padding: 7px 18px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background:
+          linear-gradient(102deg, transparent 0 24%, rgba(0, 0, 0, 0.42) 24% 27%, transparent 27%),
+          linear-gradient(125deg, #111, #ece7d5 18%, #716f64 100%);
+        border: 5px solid #050607;
+        border-top: 0;
+        clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+      }
+
+      .slot {
+        flex: 1;
+        height: 6px;
+        background: #050607;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #050607;
+      }
+
+      .pager__scratch {
+        position: absolute;
+        z-index: 3;
+        display: block;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(15, 16, 15, 0.5);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+        pointer-events: none;
+        transform: rotate(-18deg);
+      }
+
+      .pager__scratch--one {
+        top: 28px;
+        left: 36px;
+        width: 62px;
+      }
+
+      .pager__scratch--two {
+        top: 49px;
+        right: 46px;
+        width: 46px;
+        transform: rotate(13deg);
+      }
+
+      .pager__scratch--three {
+        left: 24px;
+        bottom: 31px;
+        width: 54px;
+        opacity: 0.68;
+        transform: rotate(18deg);
+      }
+
+      .pager__chip {
+        position: absolute;
+        z-index: 3;
+        display: block;
+        width: 23px;
+        height: 15px;
+        background: #080909;
+        clip-path: polygon(0 0, 100% 12%, 62% 100%, 12% 76%);
+        pointer-events: none;
+      }
+
+      .pager__chip--left {
+        left: 3px;
+        bottom: 38px;
+      }
+
+      .pager__chip--right {
+        top: 24px;
+        right: 7px;
+        transform: rotate(9deg);
+      }
+
+      .request-button {
+        width: min(100%, 360px);
+        min-height: 58px;
+        margin: 0 auto;
+        padding: 0 22px;
+        border: 2px solid var(--cyan);
+        border-radius: 4px;
+        background:
+          linear-gradient(180deg, rgba(37, 247, 255, 0.14), rgba(37, 247, 255, 0.04)),
+          #020606;
+        color: var(--cyan);
+        font: 700 0.95rem/1.1 "Courier New", Consolas, monospace;
+        letter-spacing: 0;
+        box-shadow:
+          inset 0 0 18px var(--cyan-dim),
+          0 0 20px rgba(37, 247, 255, 0.24);
+        text-shadow: 0 0 10px var(--cyan-soft);
+        touch-action: manipulation;
+      }
+
+      .request-button:active {
+        transform: translateY(1px);
+        box-shadow:
+          inset 0 0 24px rgba(37, 247, 255, 0.3),
+          0 0 10px rgba(37, 247, 255, 0.2);
+      }
+
+      .request-button:disabled {
+        opacity: 0.48;
+      }
+
+      @keyframes blinkText {
+        0%,
+        42% {
+          opacity: 1;
+        }
+        43%,
+        100% {
+          opacity: 0.24;
+        }
+      }
+
+      @keyframes blinkCursor {
+        0%,
+        48% {
+          opacity: 1;
+        }
+        49%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes jitter {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-3px, 2px);
+        }
+      }
+
+      @keyframes deviceIdle {
+        0%,
+        100% {
+          transform: rotate(-4deg) translateY(0);
+        }
+        50% {
+          transform: rotate(-3.2deg) translateY(-5px);
+        }
+      }
+
+      @media (max-height: 660px) {
+        .app {
+          gap: 16px;
+          padding-top: 14px;
+          padding-bottom: 14px;
+        }
+
+        .pager {
+          width: min(96vw, 360px);
+        }
+
+        .screen {
+          height: 138px;
+        }
+
+        .screen__text {
+          height: calc(100% - 29px);
+          font-size: 0.82rem;
+        }
+
+        .screen__text.is-waiting {
+          height: calc(100% - 14px);
+          font-size: 0.96rem;
+        }
+
+        .request-button {
+          min-height: 52px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app" aria-label="Фантастический пейджер предписаний">
+      <section class="pager" aria-label="Экран пейджера">
+        <div class="pager__top">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="pager__antenna"></div>
+        <div class="pager__body">
+          <span class="pager__scratch pager__scratch--one"></span>
+          <span class="pager__scratch pager__scratch--two"></span>
+          <span class="pager__scratch pager__scratch--three"></span>
+          <span class="pager__chip pager__chip--left"></span>
+          <span class="pager__chip pager__chip--right"></span>
+          <div class="pager__bevel">
+            <div class="screen">
+              <div class="screen__noise"></div>
+              <div class="screen__scanlines"></div>
+              <p class="screen__label" id="label">КАНАЛ 7 / ОТДЕЛ ПРЕДПИСАНИЙ</p>
+              <div class="screen__text" id="message" aria-live="polite">
+                ОЖИДАЙТЕ ПРЕДПИСАНИЯ...
+              </div>
+              <span class="cursor" id="cursor" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager__bottom">
+          <span class="slot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </section>
+
+      <button class="request-button" id="requestButton" type="button">
+        ПОЛУЧИТЬ ПРЕДПИСАНИЕ
+      </button>
+    </main>
+
+    <script>
+      const prescriptions = [
+        "Обратитесь на инфостенд и поинтересуйтесь где находится инфостенд.",
+        "Сделайте вид, что вы уже получили указание, и ожидайте уточнений.",
+        "Найдите ближайший свободный угол и временно считайте его пунктом согласования.",
+        "Сообщите ответственному лицу, что ответственное лицо пока не назначено.",
+        "Подойдите к двери, убедитесь, что она существует, и вернитесь обратно.",
+        "Запомните это предписание и забудьте его после следующего сигнала.",
+        "Встаньте в очередь, даже если очередь отсутствует.",
+        "Проверьте наличие таблички. При отсутствии таблички действуйте согласно табличке.",
+        "Сохраняйте спокойствие до поступления причин для беспокойства.",
+        "Передайте устное подтверждение самому себе.",
+        "Получите номер окна у окна, которое выдает номера окон.",
+        "Ожидайте повторного ожидания до завершения текущего ожидания.",
+        "Попроси у случайного косплеера селфи, а потом просто стой десять секунд и молча уйди.",
+        "Минуту медленно драматично хлопай перед сценой.",
+        "Встань по стойке смирно и зачитай безэмоционально пару строк первой же песни что пришла в голову.",
+        "Спроси на инфостенде «где находится инфостенд?»",
+        "Обними первого встречного незнакомца.",
+        "Найди человека без косплея и скажи, что у него хороший косплей.",
+        "Расскажи о нашем стенде незнакомцу напуганным голосом.",
+        "Позвони случайному человеку и спроси «где ты?»",
+        "Найди стенд с фандомом, которого не будет на Юниконе.",
+      ];
+
+      const message = document.querySelector("#message");
+      const label = document.querySelector("#label");
+      const button = document.querySelector("#requestButton");
+
+      let lastIndex = -1;
+      let prescriptionCount = 0;
+      let typingTimer = null;
+      let audioContext = null;
+
+      message.classList.add("is-waiting");
+
+      button.addEventListener("click", () => {
+        const prescription = getRandomPrescription();
+        const number = String(Math.floor(Math.random() * 900) + 100).padStart(3, "0");
+        prescriptionCount += 1;
+        const shouldGlitch = prescriptionCount === 3;
+
+        playDoubleBeep(shouldGlitch ? "low" : "normal");
+
+        typeMessage(number, prescription, shouldGlitch);
+      });
+
+      function getRandomPrescription() {
+        let index = Math.floor(Math.random() * prescriptions.length);
+
+        if (prescriptions.length > 1) {
+          while (index === lastIndex) {
+            index = Math.floor(Math.random() * prescriptions.length);
+          }
+        }
+
+        lastIndex = index;
+        return prescriptions[index];
+      }
+
+      function typeMessage(number, prescription, shouldGlitch = false) {
+        window.clearTimeout(typingTimer);
+        button.disabled = true;
+        label.textContent = "ВХОДЯЩИЙ СИГНАЛ / ПРОТОКОЛ П-03";
+        message.classList.remove("is-waiting");
+        message.classList.remove("is-error");
+        message.textContent = `ПРЕДПИСАНИЕ № ${number}\n\n`;
+
+        const preparedHeader = wrapTextForScreen(message.textContent);
+        const preparedPrescription = wrapTextForScreen(prescription);
+
+        if (shouldGlitch) {
+          runGlitchIntro(preparedHeader, preparedPrescription);
+          return;
+        }
+
+        typingTimer = window.setTimeout(() => {
+          typePreparedPrescription(preparedHeader, preparedPrescription);
+        }, 1000);
+      }
+
+      function runGlitchIntro(preparedHeader, preparedPrescription) {
+        const errorHeader = wrapTextForScreen("ПРЕДПИСАНИЕ № ERR ▓Ж-7Ф\n\n");
+        const errorText = wrapTextForScreen("НЕМЕДЛЕННО УНИЧТОЖЬ...");
+
+        message.classList.add("is-error");
+        message.textContent = errorHeader;
+
+        typingTimer = window.setTimeout(() => {
+          typeText({
+            prefix: errorHeader,
+            text: errorText,
+            tickTone: "low",
+            afterTyping: () => {
+              typingTimer = window.setTimeout(() => {
+                eraseText({
+                  prefix: errorHeader,
+                  text: errorText,
+                  afterErasing: () => {
+                    message.classList.remove("is-error");
+                    message.textContent = preparedHeader;
+                    typePreparedPrescription(preparedHeader, preparedPrescription);
+                  },
+                });
+              }, 500);
+            },
+          });
+        }, 1000);
+      }
+
+      function typePreparedPrescription(preparedHeader, preparedPrescription) {
+        typeText({
+          prefix: preparedHeader,
+          text: preparedPrescription,
+          tickTone: "normal",
+          afterTyping: () => {
+            button.disabled = false;
+          },
+        });
+      }
+
+      function typeText({ prefix, text, tickTone, afterTyping }) {
+        let index = 1;
+
+        const tick = () => {
+          const nextText = text.slice(0, index);
+          const currentChar = text[index - 1];
+
+          message.textContent = `${prefix}${nextText}`;
+          message.scrollTop = message.scrollHeight;
+
+          if (currentChar && currentChar.trim()) {
+            playTypeTick(tickTone);
+          }
+
+          index += 1;
+
+          if (index <= text.length) {
+            const delay = currentChar === "." || currentChar === "\n" ? 90 : 24;
+            typingTimer = window.setTimeout(tick, delay);
+            return;
+          }
+
+          afterTyping();
+        };
+
+        tick();
+      }
+
+      function eraseText({ prefix, text, afterErasing }) {
+        let index = text.length;
+
+        const tick = () => {
+          message.textContent = `${prefix}${text.slice(0, index)}`;
+          message.scrollTop = message.scrollHeight;
+          index -= 1;
+
+          if (index >= 0) {
+            typingTimer = window.setTimeout(tick, 12);
+            return;
+          }
+
+          afterErasing();
+        };
+
+        tick();
+      }
+
+      function playDoubleBeep(tone = "normal") {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContext) {
+          return;
+        }
+
+        audioContext ||= new AudioContext();
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
+        }
+
+        const start = audioContext.currentTime;
+        const frequency = tone === "low" ? 680 : 1760;
+
+        playBeep(start, 0.055, frequency);
+        playBeep(start + 0.11, 0.065, frequency);
+      }
+
+      function playBeep(start, duration, frequency) {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = "square";
+        oscillator.frequency.setValueAtTime(frequency, start);
+        oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.92, start + duration);
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.08, start + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + duration + 0.015);
+      }
+
+      function playTypeTick(tone = "normal") {
+        if (!audioContext) {
+          return;
+        }
+
+        const start = audioContext.currentTime;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+
+        oscillator.type = "square";
+        const baseFrequency = tone === "low" ? 760 : 2100;
+        const drift = tone === "low" ? 60 : 140;
+
+        oscillator.frequency.setValueAtTime(baseFrequency + Math.random() * drift, start);
+
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(tone === "low" ? 720 : 1800, start);
+        filter.Q.setValueAtTime(8, start);
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(tone === "low" ? 0.024 : 0.018, start + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.018);
+
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + 0.022);
+      }
+
+      function wrapTextForScreen(text) {
+        const computed = window.getComputedStyle(message);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        const maxWidth = message.clientWidth - 2;
+
+        context.font = `${computed.fontWeight} ${computed.fontSize} ${computed.fontFamily}`;
+
+        return text
+          .split("\n")
+          .map((line) => wrapLine(line.toUpperCase(), maxWidth, context))
+          .join("\n");
+      }
+
+      function wrapLine(line, maxWidth, context) {
+        if (!line.trim()) {
+          return "";
+        }
+
+        const words = line.split(" ");
+        const wrapped = [];
+        let currentLine = "";
+
+        words.forEach((word) => {
+          const candidate = currentLine ? `${currentLine} ${word}` : word;
+
+          if (context.measureText(candidate).width <= maxWidth) {
+            currentLine = candidate;
+            return;
+          }
+
+          if (currentLine) {
+            wrapped.push(currentLine);
+            currentLine = "";
+          }
+
+          if (context.measureText(word).width <= maxWidth) {
+            currentLine = word;
+            return;
+          }
+
+          const pieces = splitLongWord(word, maxWidth, context);
+          wrapped.push(...pieces.slice(0, -1));
+          currentLine = pieces.at(-1) || "";
+        });
+
+        if (currentLine) {
+          wrapped.push(currentLine);
+        }
+
+        return wrapped.join("\n");
+      }
+
+      function splitLongWord(word, maxWidth, context) {
+        const pieces = [];
+        let piece = "";
+
+        Array.from(word).forEach((character) => {
+          const candidate = piece + character;
+
+          if (!piece || context.measureText(candidate).width <= maxWidth) {
+            piece = candidate;
+            return;
+          }
+
+          pieces.push(piece);
+          piece = character;
+        });
+
+        if (piece) {
+          pieces.push(piece);
+        }
+
+        return pieces;
+      }
+    </script>
+  </body>
+</html>
