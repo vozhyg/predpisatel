@@ -281,6 +281,11 @@
         animation: blinkCursor 740ms steps(2) infinite;
       }
 
+      .screen__text.is-error .cursor {
+        background: #ff3030;
+        box-shadow: 0 0 12px rgba(255, 48, 48, 0.92);
+      }
+
       .pager__bottom {
         width: 70%;
         height: 23px;
@@ -492,7 +497,6 @@
               <div class="screen__text" id="message" aria-live="polite">
                 ОЖИДАЙТЕ ПРЕДПИСАНИЯ...
               </div>
-              <span class="cursor" id="cursor" aria-hidden="true"></span>
             </div>
           </div>
         </div>
@@ -575,7 +579,7 @@
         label.textContent = "ВХОДЯЩИЙ СИГНАЛ / ПРОТОКОЛ П-03";
         message.classList.remove("is-waiting");
         message.classList.remove("is-error");
-        message.textContent = `ПРЕДПИСАНИЕ № ${number}\n\n`;
+        renderMessage(`ПРЕДПИСАНИЕ № ${number}\n\n`);
 
         const preparedHeader = wrapTextForScreen(message.textContent);
         const preparedPrescription = wrapTextForScreen(prescription);
@@ -595,7 +599,7 @@
         const errorText = wrapTextForScreen("НЕМЕДЛЕННО УНИЧТОЖЬ...");
 
         message.classList.add("is-error");
-        message.textContent = errorHeader;
+        renderMessage(errorHeader);
 
         typingTimer = window.setTimeout(() => {
           typeText({
@@ -608,9 +612,9 @@
                   prefix: errorHeader,
                   text: errorText,
                   afterErasing: () => {
-                    message.classList.remove("is-error");
-                    message.textContent = preparedHeader;
-                    typePreparedPrescription(preparedHeader, preparedPrescription);
+                  message.classList.remove("is-error");
+                  renderMessage(preparedHeader);
+                  typePreparedPrescription(preparedHeader, preparedPrescription);
                   },
                 });
               }, 500);
@@ -637,8 +641,7 @@
           const nextText = text.slice(0, index);
           const currentChar = text[index - 1];
 
-          message.textContent = `${prefix}${nextText}`;
-          message.scrollTop = message.scrollHeight;
+          renderMessage(`${prefix}${nextText}`);
 
           if (currentChar && currentChar.trim()) {
             playTypeTick(tickTone);
@@ -652,6 +655,7 @@
             return;
           }
 
+          renderMessage(`${prefix}${text}\n`);
           afterTyping();
         };
 
@@ -662,8 +666,7 @@
         let index = text.length;
 
         const tick = () => {
-          message.textContent = `${prefix}${text.slice(0, index)}`;
-          message.scrollTop = message.scrollHeight;
+          renderMessage(`${prefix}${text.slice(0, index)}`);
           index -= 1;
 
           if (index >= 0) {
@@ -675,6 +678,17 @@
         };
 
         tick();
+      }
+
+      function renderMessage(text) {
+        message.textContent = "";
+        message.append(document.createTextNode(text));
+
+        const cursor = document.createElement("span");
+        cursor.className = "cursor";
+        cursor.setAttribute("aria-hidden", "true");
+        message.append(cursor);
+        message.scrollTop = message.scrollHeight;
       }
 
       function playDoubleBeep(tone = "normal") {
