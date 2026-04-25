@@ -7,9 +7,9 @@
     <style>
       :root {
         --bg: #020405;
-        --cyan: #25f7ff;
-        --cyan-soft: rgba(37, 247, 255, 0.44);
-        --cyan-dim: rgba(37, 247, 255, 0.18);
+        --cyan: #4facff;
+        --cyan-soft: rgba(79, 172, 255, 0.44);
+        --cyan-dim: rgba(79, 172, 255, 0.18);
       }
 
       * {
@@ -29,7 +29,7 @@
         inset: 0;
         margin: 0;
         background:
-          radial-gradient(circle at 50% 28%, rgba(37, 247, 255, 0.12), transparent 38%),
+          radial-gradient(circle at 50% 28%, rgba(79, 172, 255, 0.12), transparent 38%),
           linear-gradient(180deg, #07090a 0%, var(--bg) 48%, #000 100%);
         color: var(--cyan);
         font-family: "Courier New", Consolas, monospace;
@@ -190,13 +190,13 @@
         position: relative;
         overflow: hidden;
         background:
-          radial-gradient(circle at 18% 12%, rgba(37, 247, 255, 0.16), transparent 28%),
+          radial-gradient(circle at 18% 12%, rgba(79, 172, 255, 0.16), transparent 28%),
           linear-gradient(180deg, #010909 0%, #020303 100%);
         border: 3px solid #111;
         box-shadow:
-          inset 0 0 0 2px rgba(37, 247, 255, 0.1),
-          inset 0 0 28px rgba(37, 247, 255, 0.2),
-          0 0 24px rgba(37, 247, 255, 0.24);
+          inset 0 0 0 2px rgba(79, 172, 255, 0.1),
+          inset 0 0 28px rgba(79, 172, 255, 0.2),
+          0 0 24px rgba(79, 172, 255, 0.24);
         transform: skewX(8deg);
       }
 
@@ -220,8 +220,8 @@
       .screen__scanlines {
         background: repeating-linear-gradient(
           180deg,
-          rgba(37, 247, 255, 0.06) 0,
-          rgba(37, 247, 255, 0.06) 1px,
+          rgba(79, 172, 255, 0.06) 0,
+          rgba(79, 172, 255, 0.06) 1px,
           transparent 1px,
           transparent 5px
         );
@@ -229,7 +229,7 @@
 
       .screen__label {
         margin: 0 0 10px;
-        color: rgba(37, 247, 255, 0.62);
+        color: rgba(79, 172, 255, 0.62);
         font-size: 0.72rem;
         line-height: 1.35;
         text-shadow: 0 0 8px var(--cyan-soft);
@@ -246,7 +246,7 @@
         white-space: pre-wrap;
         text-transform: uppercase;
         text-shadow:
-          0 0 5px rgba(37, 247, 255, 0.95),
+          0 0 5px rgba(79, 172, 255, 0.95),
           0 0 16px var(--cyan-soft);
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -266,8 +266,8 @@
         margin-top: 0;
         display: block;
         text-align: left;
-        font-size: clamp(1rem, 4.25vw, 1.24rem);
-        line-height: 1.22;
+        font-size: clamp(0.9rem, 3.85vw, 1.08rem);
+        line-height: 1.26;
         overflow-wrap: normal;
         word-break: normal;
         text-wrap: balance;
@@ -300,65 +300,85 @@
       .boot-flower {
         position: absolute;
         left: 50%;
-        top: 58%;
-        width: 94px;
-        height: 94px;
+        top: 68%;
+        width: 92px;
+        height: 92px;
         opacity: 0;
         pointer-events: none;
-        transform: translate(-50%, -50%) scale(0.86);
+        transform: translate(-50%, -50%);
         transition: opacity 180ms ease;
         filter:
-          drop-shadow(0 0 8px rgba(37, 247, 255, 0.95))
-          drop-shadow(0 0 18px rgba(37, 247, 255, 0.45));
+          drop-shadow(0 0 8px rgba(79, 172, 255, 0.95))
+          drop-shadow(0 0 22px rgba(79, 172, 255, 0.58))
+          drop-shadow(0 0 38px rgba(5, 90, 255, 0.38));
       }
 
       .boot-flower.is-visible {
         opacity: 1;
-        animation: flowerPulse 780ms steps(2) infinite;
       }
 
-      .boot-flower__petal,
-      .boot-flower__core {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        background: rgba(37, 247, 255, 0.88);
-        border: 2px solid #0577ff;
-        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.28);
+      .boot-flower:not(.is-visible) .boot-flower__petal {
+        animation: none;
+        opacity: 0;
       }
 
       .boot-flower__petal {
-        width: 31px;
-        height: 48px;
-        border-radius: 58% 58% 50% 50%;
-        transform-origin: 50% 92%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 28px;
+        height: 41px;
+        background: var(--cyan);
+        border: 0;
+        border-radius: 82% 82% 58% 58% / 92% 92% 42% 42%;
+        box-shadow: none;
+        clip-path: polygon(
+          50% 0,
+          64% 7%,
+          78% 20%,
+          91% 42%,
+          96% 64%,
+          88% 82%,
+          74% 95%,
+          66% 100%,
+          58% 96%,
+          50% 70%,
+          42% 96%,
+          34% 100%,
+          26% 95%,
+          12% 82%,
+          4% 64%,
+          9% 42%,
+          22% 20%,
+          36% 7%
+        );
+        opacity: 0;
+        transform-origin: 50% 125%;
       }
 
       .boot-flower__petal:nth-child(1) {
-        transform: translate(-50%, -100%) rotate(0deg);
+        transform: translate(-50%, -132%) rotate(0deg);
+        animation: petalOne 6s steps(1) infinite;
       }
 
       .boot-flower__petal:nth-child(2) {
-        transform: translate(-50%, -100%) rotate(72deg);
+        transform: translate(-50%, -132%) rotate(72deg);
+        animation: petalTwo 6s steps(1) infinite;
       }
 
       .boot-flower__petal:nth-child(3) {
-        transform: translate(-50%, -100%) rotate(144deg);
+        transform: translate(-50%, -132%) rotate(144deg);
+        animation: petalThree 6s steps(1) infinite;
       }
 
       .boot-flower__petal:nth-child(4) {
-        transform: translate(-50%, -100%) rotate(216deg);
+        transform: translate(-50%, -132%) rotate(216deg);
+        animation: petalFour 6s steps(1) infinite;
       }
 
       .boot-flower__petal:nth-child(5) {
-        transform: translate(-50%, -100%) rotate(288deg);
-      }
-
-      .boot-flower__core {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -132%) rotate(288deg);
+        animation: petalFive 6s steps(1) infinite;
       }
 
       .pager__bottom {
@@ -453,14 +473,14 @@
         border: 2px solid var(--cyan);
         border-radius: 4px;
         background:
-          linear-gradient(180deg, rgba(37, 247, 255, 0.14), rgba(37, 247, 255, 0.04)),
+          linear-gradient(180deg, rgba(79, 172, 255, 0.14), rgba(79, 172, 255, 0.04)),
           #020606;
         color: var(--cyan);
         font: 700 0.95rem/1.1 "Courier New", Consolas, monospace;
         letter-spacing: 0;
         box-shadow:
           inset 0 0 18px var(--cyan-dim),
-          0 0 20px rgba(37, 247, 255, 0.24);
+          0 0 20px rgba(79, 172, 255, 0.24);
         text-shadow: 0 0 10px var(--cyan-soft);
         touch-action: manipulation;
       }
@@ -468,8 +488,8 @@
       .request-button:active {
         transform: translateY(1px);
         box-shadow:
-          inset 0 0 24px rgba(37, 247, 255, 0.3),
-          0 0 10px rgba(37, 247, 255, 0.2);
+          inset 0 0 24px rgba(79, 172, 255, 0.3),
+          0 0 10px rgba(79, 172, 255, 0.2);
       }
 
       .request-button:disabled {
@@ -517,13 +537,72 @@
         }
       }
 
-      @keyframes flowerPulse {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) scale(0.86);
+      @keyframes petalOne {
+        0% {
+          opacity: 0;
         }
-        50% {
-          transform: translate(-50%, -50%) scale(0.96);
+        0.1%,
+        99% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes petalTwo {
+        0%,
+        13.2% {
+          opacity: 0;
+        }
+        13.3%,
+        99% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes petalThree {
+        0%,
+        26.5% {
+          opacity: 0;
+        }
+        26.6%,
+        99% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes petalFour {
+        0%,
+        39.8% {
+          opacity: 0;
+        }
+        39.9%,
+        99% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes petalFive {
+        0%,
+        53.1% {
+          opacity: 0;
+        }
+        53.2%,
+        99% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
         }
       }
 
@@ -549,7 +628,7 @@
 
         .screen__text.is-waiting {
           height: calc(100% - 29px);
-          font-size: 0.9rem;
+          font-size: 0.82rem;
         }
 
         .request-button {
@@ -586,7 +665,6 @@
                 <span class="boot-flower__petal"></span>
                 <span class="boot-flower__petal"></span>
                 <span class="boot-flower__petal"></span>
-                <span class="boot-flower__core"></span>
               </div>
             </div>
           </div>
@@ -685,6 +763,8 @@
                 text: connectingText,
                 afterTyping: () => {
                   typingTimer = window.setTimeout(() => {
+                    bootFlower.classList.remove("is-visible");
+                    void bootFlower.offsetWidth;
                     bootFlower.classList.add("is-visible");
 
                     typingTimer = window.setTimeout(() => {
@@ -699,7 +779,7 @@
                           button.disabled = false;
                         },
                       });
-                    }, 3000);
+                    }, 6000);
                   }, 1000);
                 },
               });
@@ -1009,3 +1089,4 @@
     </script>
   </body>
 </html>
+
