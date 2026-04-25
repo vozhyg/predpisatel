@@ -23,6 +23,7 @@
         height: 100%;
         overflow: hidden;
         overscroll-behavior: none;
+        background: #000;
       }
 
       body {
@@ -49,7 +50,7 @@
         align-items: center;
         gap: 26px;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         touch-action: none;
       }
 
@@ -66,7 +67,7 @@
       }
 
       .pager {
-        width: min(94vw, 410px);
+        width: min(92vw, 410px);
         margin: auto;
         position: relative;
         filter: drop-shadow(0 28px 34px rgba(0, 0, 0, 0.7));
@@ -75,40 +76,59 @@
       }
 
       .pager__top {
-        width: 60%;
-        height: 22px;
-        margin-left: 22%;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        padding: 0 18px;
+        position: absolute;
+        z-index: 5;
+        top: 15px;
+        left: 52px;
+        right: 90px;
+        height: 23px;
         background:
-          linear-gradient(96deg, transparent 13%, rgba(20, 22, 21, 0.35) 13% 17%, transparent 17%),
-          linear-gradient(130deg, #f0ecd7, #8c8879);
-        border: 4px solid #090b0c;
-        border-bottom: 0;
-        clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+          linear-gradient(95deg, transparent 0 23%, rgba(255, 255, 255, 0.18) 23% 25%, transparent 25%),
+          linear-gradient(160deg, #746e61, #4e493f);
+        border: 3px solid rgba(8, 9, 8, 0.76);
+        clip-path: polygon(5% 0, 98% 0, 91% 100%, 0 100%);
+        opacity: 0.86;
+        pointer-events: none;
       }
 
       .pager__top span {
-        width: 34px;
-        height: 6px;
-        background: rgba(5, 8, 8, 0.7);
-        transform: skewX(-24deg);
+        position: absolute;
+        top: 4px;
+        width: 48px;
+        height: 14px;
+        background: #6b6558;
+        border: 2px solid rgba(8, 9, 8, 0.55);
+        clip-path: polygon(12% 0, 100% 0, 82% 100%, 0 100%);
+      }
+
+      .pager__top span:nth-child(1) {
+        left: -47px;
+      }
+
+      .pager__top span:nth-child(2),
+      .pager__top span:nth-child(3) {
+        display: none;
       }
 
       .pager__body {
         position: relative;
         z-index: 2;
-        padding: 18px 18px 20px;
+        min-height: 214px;
+        padding: 31px 52px 23px 17px;
         background:
-          radial-gradient(circle at 15% 82%, rgba(0, 0, 0, 0.42) 0 2px, transparent 3px),
-          radial-gradient(circle at 82% 18%, rgba(0, 0, 0, 0.3) 0 1px, transparent 2px),
-          linear-gradient(116deg, transparent 0 10%, rgba(14, 15, 14, 0.5) 10% 12%, rgba(255, 255, 255, 0.45) 12% 17%, transparent 17%),
-          linear-gradient(24deg, transparent 0 62%, rgba(0, 0, 0, 0.28) 62% 66%, rgba(244, 239, 219, 0.44) 66% 70%, transparent 70%),
-          linear-gradient(155deg, #efead7 0%, #9d9a8d 38%, #eee6cf 39%, #5d5b52 100%);
+          radial-gradient(circle at 20% 18%, rgba(20, 18, 15, 0.38) 0 1px, transparent 2px),
+          radial-gradient(circle at 58% 22%, rgba(20, 18, 15, 0.32) 0 1px, transparent 2px),
+          radial-gradient(circle at 76% 70%, rgba(20, 18, 15, 0.34) 0 1px, transparent 2px),
+          radial-gradient(circle at 31% 84%, rgba(20, 18, 15, 0.32) 0 1px, transparent 2px),
+          repeating-linear-gradient(103deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 18px),
+          linear-gradient(170deg, rgba(255, 255, 255, 0.42) 0 8%, transparent 9% 54%, rgba(0, 0, 0, 0.22) 55%),
+          linear-gradient(145deg, #d2c9b7 0%, #b8ad98 30%, #aaa18e 54%, #776f62 100%);
         border: 7px solid #050607;
-        clip-path: polygon(8% 0, 84% 0, 96% 20%, 94% 100%, 11% 100%, 0 70%, 0 14%);
+        clip-path: polygon(7% 0, 93% 0, 100% 10%, 100% 90%, 93% 100%, 7% 100%, 0 90%, 0 10%);
+        box-shadow:
+          inset 0 2px 0 rgba(255, 255, 255, 0.34),
+          inset 0 -8px 0 rgba(0, 0, 0, 0.2),
+          0 7px 0 #1b1a17;
       }
 
       .pager__body::before,
@@ -120,74 +140,45 @@
       }
 
       .pager__body::before {
-        inset: 8px 14px;
-        opacity: 0.75;
-        background:
-          linear-gradient(122deg, transparent 0 18%, rgba(5, 6, 6, 0.42) 18% 19%, transparent 19% 100%),
-          linear-gradient(170deg, transparent 0 33%, rgba(255, 255, 255, 0.34) 33% 34%, transparent 34% 100%),
-          linear-gradient(22deg, transparent 0 76%, rgba(6, 7, 7, 0.5) 76% 78%, transparent 78% 100%);
-        clip-path: polygon(7% 0, 84% 0, 96% 20%, 93% 100%, 11% 100%, 0 70%, 0 14%);
+        inset: 12px 14px;
+        clip-path: polygon(6% 0, 93% 0, 100% 10%, 100% 90%, 93% 100%, 7% 100%, 0 90%, 0 10%);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.24);
       }
 
       .pager__body::after {
-        right: 18px;
-        bottom: 14px;
-        width: 72px;
-        height: 18px;
+        left: 28px;
+        right: 59px;
+        bottom: 12px;
+        width: auto;
+        height: 12px;
         background:
-          linear-gradient(152deg, transparent 0 20%, rgba(5, 6, 6, 0.55) 20% 30%, transparent 30%),
-          linear-gradient(174deg, transparent 0 57%, rgba(255, 255, 255, 0.4) 57% 66%, transparent 66%);
-        transform: skewX(-22deg);
+          linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 45%),
+          #7d7567;
+        border: 3px solid rgba(8, 9, 8, 0.65);
+        clip-path: polygon(0 0, 100% 0, 94% 100%, 3% 100%);
+        opacity: 0.76;
       }
 
       .pager__antenna {
-        position: absolute;
-        z-index: 4;
-        top: 23px;
-        right: -2px;
-        width: 92px;
-        height: 60px;
-        background: #050607;
-        clip-path: polygon(0 0, 66% 0, 92% 24%, 100% 58%, 84% 58%, 78% 100%, 28% 100%, 18% 62%, 0 52%);
-        pointer-events: none;
-      }
-
-      .pager__antenna::before {
-        content: "";
-        position: absolute;
-        inset: 7px;
-        background:
-          linear-gradient(112deg, transparent 0 32%, rgba(8, 9, 9, 0.45) 32% 38%, transparent 38%),
-          linear-gradient(154deg, #eee8d1 0%, #c1bcaa 42%, #767468 100%);
-        clip-path: polygon(0 0, 64% 0, 90% 24%, 100% 56%, 82% 56%, 76% 100%, 30% 100%, 20% 62%, 0 52%);
-      }
-
-      .pager__antenna::after {
-        content: "";
-        position: absolute;
-        right: 14px;
-        top: 16px;
-        width: 32px;
-        height: 8px;
-        background: rgba(5, 6, 6, 0.62);
-        transform: rotate(28deg);
+        display: none;
       }
 
       .pager__bevel {
         position: relative;
-        z-index: 2;
-        padding: 11px 12px;
+        z-index: 4;
+        padding: 8px 9px;
         background:
-          linear-gradient(118deg, transparent 0 8%, rgba(255, 255, 255, 0.48) 8% 12%, transparent 12%),
-          linear-gradient(24deg, transparent 0 72%, rgba(0, 0, 0, 0.34) 72% 76%, transparent 76%),
-          linear-gradient(135deg, #151819, #f5f0db 16%, #151819 17% 20%, #d7d0bd 20% 100%);
-        border: 5px solid #080a0a;
-        transform: skewX(-8deg);
+          linear-gradient(135deg, #151714 0 7%, #d2c9b7 7% 13%, #161816 13% 18%, #9f9582 18% 100%);
+        border: 4px solid #080a0a;
+        box-shadow:
+          inset 0 0 0 2px rgba(0, 0, 0, 0.48),
+          0 7px 0 rgba(0, 0, 0, 0.34);
       }
 
       .screen {
-        height: clamp(156px, 40vw, 188px);
-        padding: 14px 15px 13px;
+        height: clamp(142px, 36vw, 172px);
+        padding: 12px 13px 11px;
         position: relative;
         overflow: hidden;
         background:
@@ -198,7 +189,6 @@
           inset 0 0 0 2px rgba(79, 172, 255, 0.1),
           inset 0 0 28px rgba(79, 172, 255, 0.2),
           0 0 24px rgba(79, 172, 255, 0.24);
-        transform: skewX(8deg);
       }
 
       .screen__noise,
@@ -229,19 +219,22 @@
       }
 
       .screen__label {
-        margin: 0 0 10px;
+        margin: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px solid rgba(79, 172, 255, 0.58);
         color: rgba(79, 172, 255, 0.62);
-        font-size: 0.74rem;
+        font-size: 0.68rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         line-height: 1.35;
         text-shadow: 0 0 8px var(--cyan-soft);
+        box-shadow: 0 1px 0 rgba(79, 172, 255, 0.12);
       }
 
       .screen__text {
-        height: calc(100% - 31px);
+        height: calc(100% - 24px);
         color: var(--cyan);
-        font-size: clamp(0.92rem, 3.82vw, 1.06rem);
+        font-size: clamp(0.82rem, 3.42vw, 0.96rem);
         font-weight: 800;
         letter-spacing: 0.025em;
         line-height: 1.26;
@@ -379,33 +372,175 @@
         animation: petalFive 6s steps(1) infinite;
       }
 
-      .pager__bottom {
-        width: 70%;
-        height: 23px;
-        margin-left: 12%;
-        padding: 7px 18px 0;
+      .pager__module {
+        position: absolute;
+        z-index: 6;
+        right: 8px;
+        bottom: 13px;
+        width: 48px;
+        height: 49px;
+        padding: 16px 6px 0 13px;
         display: flex;
         align-items: flex-start;
-        gap: 10px;
+        justify-content: flex-end;
+        gap: 3px;
         background:
-          linear-gradient(102deg, transparent 0 24%, rgba(0, 0, 0, 0.42) 24% 27%, transparent 27%),
-          linear-gradient(125deg, #111, #ece7d5 18%, #716f64 100%);
+          radial-gradient(circle at 78% 63%, rgba(79, 172, 255, 0.95) 0 4px, rgba(79, 172, 255, 0.22) 5px, transparent 11px),
+          repeating-linear-gradient(106deg, transparent 0 10px, rgba(255, 255, 255, 0.08) 10px 12px, transparent 12px 18px),
+          radial-gradient(circle at 80% 44%, rgba(83, 88, 77, 0.24) 0 10px, transparent 19px),
+          linear-gradient(145deg, #23261f 0%, #121411 58%, #070807 100%);
         border: 5px solid #050607;
-        border-top: 0;
-        clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+        clip-path: polygon(11% 0, 96% 0, 100% 16%, 100% 80%, 89% 100%, 12% 100%, 0 87%, 0 18%);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.12),
+          inset -5px -6px 0 rgba(0, 0, 0, 0.25);
       }
 
       .slot {
-        flex: 1;
-        height: 6px;
-        background: #050607;
+        width: 5px;
+        height: 13px;
+        background: #c68726;
+        transform: skewX(-18deg);
+        box-shadow: 0 0 6px rgba(198, 135, 38, 0.38);
       }
 
       .dot {
-        width: 7px;
-        height: 7px;
+        width: 6px;
+        height: 6px;
+        margin-top: 15px;
         border-radius: 50%;
         background: #050607;
+      }
+
+      .dot.is-lit {
+        background: var(--cyan);
+        box-shadow:
+          0 0 6px rgba(79, 172, 255, 0.95),
+          0 0 14px rgba(79, 172, 255, 0.46);
+      }
+
+      .pager__right-dock {
+        position: absolute;
+        z-index: 5;
+        top: 39px;
+        right: 10px;
+        bottom: 28px;
+        width: 43px;
+        background:
+          radial-gradient(circle at 52% 72%, rgba(26, 23, 18, 0.34) 0 11px, transparent 20px),
+          repeating-linear-gradient(91deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 15px),
+          linear-gradient(160deg, #cfc5ad 0%, #afa48f 48%, #7d7568 100%);
+        border: 5px solid rgba(8, 9, 8, 0.9);
+        clip-path: polygon(12% 0, 100% 0, 100% 82%, 88% 100%, 12% 100%, 0 88%, 0 12%);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.25),
+          inset -8px 0 0 rgba(0, 0, 0, 0.18);
+        pointer-events: none;
+      }
+
+      .pager__right-dock::before {
+        content: "";
+        position: absolute;
+        left: 9px;
+        right: 7px;
+        top: 19px;
+        height: 34px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 42%),
+          rgba(88, 85, 74, 0.42);
+        border: 2px solid rgba(42, 43, 37, 0.72);
+        border-radius: 4px;
+        box-shadow:
+          inset 0 2px 3px rgba(0, 0, 0, 0.24),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .pager__right-dock::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 27px;
+        width: 20px;
+        height: 21px;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            #35362e 0 3px,
+            transparent 3px 9px
+          );
+        transform: translateX(-50%);
+      }
+
+      .pager__right-frame {
+        position: absolute;
+        z-index: 12;
+        top: 39px;
+        right: 10px;
+        bottom: 28px;
+        width: 43px;
+        border: 5px solid rgba(8, 9, 8, 0.98);
+        clip-path: polygon(12% 0, 100% 0, 100% 82%, 88% 100%, 12% 100%, 0 88%, 0 12%);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.4),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        pointer-events: none;
+      }
+
+      .pager__right-frame::before,
+      .pager__right-frame::after {
+        content: "";
+        position: absolute;
+        z-index: 2;
+        background: rgba(8, 9, 8, 0.98);
+      }
+
+      .pager__right-frame::before {
+        top: -1px;
+        left: 5px;
+        right: 0;
+        height: 6px;
+      }
+
+      .pager__right-frame::after {
+        top: 11px;
+        left: -1px;
+        bottom: 12px;
+        width: 6px;
+        border-radius: 999px;
+      }
+
+      .pager__right-corner {
+        position: absolute;
+        z-index: 14;
+        top: 38px;
+        right: 50px;
+        width: 13px;
+        height: 62px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 52%),
+          linear-gradient(180deg, #aba48f, #918a79);
+        pointer-events: none;
+      }
+
+      .pager__right-corner::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 6px;
+        height: 62px;
+        background: rgba(8, 9, 8, 0.98);
+        border-radius: 999px;
+      }
+
+      .pager__right-corner::after {
+        content: "";
+        position: absolute;
+        left: 7px;
+        right: -50px;
+        top: 0;
+        height: 6px;
+        background: rgba(8, 9, 8, 0.98);
       }
 
       .pager__scratch {
@@ -442,9 +577,9 @@
       }
 
       .pager__chip {
+        display: none;
         position: absolute;
         z-index: 3;
-        display: block;
         width: 23px;
         height: 15px;
         background: #080909;
@@ -464,7 +599,7 @@
       }
 
       .request-button {
-        width: min(100%, 360px);
+        width: min(76vw, 330px);
         min-height: 58px;
         margin: 0 auto;
         padding: 0 22px;
@@ -622,12 +757,18 @@
         }
 
         .screen__text {
-          height: calc(100% - 29px);
+          height: calc(100% - 24px);
           font-size: 0.82rem;
         }
 
         .request-button {
           min-height: 52px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .pager {
+          left: -18px;
         }
       }
     </style>
@@ -648,6 +789,15 @@
           <span class="pager__scratch pager__scratch--three"></span>
           <span class="pager__chip pager__chip--left"></span>
           <span class="pager__chip pager__chip--right"></span>
+          <div class="pager__right-dock" aria-hidden="true"></div>
+          <div class="pager__module" aria-hidden="true">
+            <span class="slot"></span>
+            <span class="slot"></span>
+            <span class="slot"></span>
+            <span class="dot is-lit"></span>
+          </div>
+          <span class="pager__right-frame" aria-hidden="true"></span>
+          <span class="pager__right-corner" aria-hidden="true"></span>
           <div class="pager__bevel">
             <div class="screen">
               <div class="screen__noise"></div>
@@ -665,11 +815,6 @@
           </div>
         </div>
 
-        <div class="pager__bottom">
-          <span class="slot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
       </section>
 
       <button class="request-button" id="requestButton" type="button">
