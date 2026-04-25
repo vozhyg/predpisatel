@@ -297,6 +297,70 @@
         box-shadow: 0 0 12px rgba(255, 48, 48, 0.92);
       }
 
+      .boot-flower {
+        position: absolute;
+        left: 50%;
+        top: 58%;
+        width: 94px;
+        height: 94px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%) scale(0.86);
+        transition: opacity 180ms ease;
+        filter:
+          drop-shadow(0 0 8px rgba(37, 247, 255, 0.95))
+          drop-shadow(0 0 18px rgba(37, 247, 255, 0.45));
+      }
+
+      .boot-flower.is-visible {
+        opacity: 1;
+        animation: flowerPulse 780ms steps(2) infinite;
+      }
+
+      .boot-flower__petal,
+      .boot-flower__core {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background: rgba(37, 247, 255, 0.88);
+        border: 2px solid #0577ff;
+        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.28);
+      }
+
+      .boot-flower__petal {
+        width: 31px;
+        height: 48px;
+        border-radius: 58% 58% 50% 50%;
+        transform-origin: 50% 92%;
+      }
+
+      .boot-flower__petal:nth-child(1) {
+        transform: translate(-50%, -100%) rotate(0deg);
+      }
+
+      .boot-flower__petal:nth-child(2) {
+        transform: translate(-50%, -100%) rotate(72deg);
+      }
+
+      .boot-flower__petal:nth-child(3) {
+        transform: translate(-50%, -100%) rotate(144deg);
+      }
+
+      .boot-flower__petal:nth-child(4) {
+        transform: translate(-50%, -100%) rotate(216deg);
+      }
+
+      .boot-flower__petal:nth-child(5) {
+        transform: translate(-50%, -100%) rotate(288deg);
+      }
+
+      .boot-flower__core {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+      }
+
       .pager__bottom {
         width: 70%;
         height: 23px;
@@ -453,6 +517,16 @@
         }
       }
 
+      @keyframes flowerPulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(0.86);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(0.96);
+        }
+      }
+
       @media (max-height: 660px) {
         .app {
           gap: 16px;
@@ -506,6 +580,14 @@
               <div class="screen__scanlines"></div>
               <p class="screen__label" id="label"></p>
               <div class="screen__text" id="message" aria-live="polite"></div>
+              <div class="boot-flower" id="bootFlower" aria-hidden="true">
+                <span class="boot-flower__petal"></span>
+                <span class="boot-flower__petal"></span>
+                <span class="boot-flower__petal"></span>
+                <span class="boot-flower__petal"></span>
+                <span class="boot-flower__petal"></span>
+                <span class="boot-flower__core"></span>
+              </div>
             </div>
           </div>
         </div>
@@ -550,6 +632,7 @@
       const message = document.querySelector("#message");
       const label = document.querySelector("#label");
       const button = document.querySelector("#requestButton");
+      const bootFlower = document.querySelector("#bootFlower");
 
       let lastIndex = -1;
       let prescriptionCount = 0;
@@ -584,37 +667,45 @@
       runBootSequence();
 
       function runBootSequence() {
-        const frames = [
-          "  .-^-.\n<(\\|/)>\n  /|\\\n  '-v-'",
-          "  .-^-.\n<(/|\\)>\n  \\|/\n  '-v-'",
-          "  .-^-.\n<(\\|/)>\n  /|\\\n  '-v-'",
-          "  .-^-.\n<(\\|/)>\n  \\|/\n  '-v-'",
-        ];
+        const bootLabel = "ОТДЕЛ ПРЕДПИСАНИЙ / КАНАЛ 7";
+        const connectingText = "УСТАНОВКА СОЕДИНЕНИЯ";
+        const connectedText = "СОЕДИНЕНИЕ УСТАНОВЛЕНО\n\nОЖИДАЙТЕ ПРЕДПИСАНИЯ...";
 
-        label.textContent = "ОТДЕЛ ПРЕДПИСАНИЙ / КАНАЛ 7";
+        label.textContent = "";
         message.classList.remove("is-waiting", "is-error");
         renderMessage("", { showCursor: false });
 
-        typingTimer = window.setTimeout(() => {
-          renderMessage("УСТАНОВКА СОЕДИНЕНИЯ\n\n", { showCursor: false });
-
-          typingTimer = window.setTimeout(() => {
-            let frameIndex = 0;
-            renderMessage(`УСТАНОВКА СОЕДИНЕНИЯ\n\n${frames[frameIndex]}`, { showCursor: false });
-
-            const loadingTimer = window.setInterval(() => {
-              frameIndex += 1;
-              renderMessage(`УСТАНОВКА СОЕДИНЕНИЯ\n\n${frames[frameIndex % frames.length]}`, { showCursor: false });
-            }, 260);
-
+        typePlainText({
+          target: label,
+          text: bootLabel,
+          afterTyping: () => {
             typingTimer = window.setTimeout(() => {
-              window.clearInterval(loadingTimer);
-              renderMessage("СОЕДИНЕНИЕ УСТАНОВЛЕНО\n\nОЖИДАЙТЕ ПРЕДПИСАНИЯ...");
-              message.classList.add("is-waiting");
-              button.disabled = false;
-            }, 3000);
-          }, 1000);
-        }, 1000);
+              typePlainText({
+                target: message,
+                text: connectingText,
+                afterTyping: () => {
+                  typingTimer = window.setTimeout(() => {
+                    bootFlower.classList.add("is-visible");
+
+                    typingTimer = window.setTimeout(() => {
+                      bootFlower.classList.remove("is-visible");
+                      message.classList.remove("is-waiting");
+                      typeText({
+                        prefix: "",
+                        text: connectedText,
+                        tickTone: "silent",
+                        afterTyping: () => {
+                          message.classList.add("is-waiting");
+                          button.disabled = false;
+                        },
+                      });
+                    }, 3000);
+                  }, 1000);
+                },
+              });
+            }, 1000);
+          },
+        });
       }
 
       function getRandomPrescription() {
@@ -700,7 +791,7 @@
 
           renderMessage(`${prefix}${nextText}`);
 
-          if (currentChar && currentChar.trim()) {
+          if (tickTone !== "silent" && currentChar && currentChar.trim()) {
             playTypeTick(tickTone);
           }
 
@@ -713,6 +804,24 @@
           }
 
           renderMessage(`${prefix}${text}\n`);
+          afterTyping();
+        };
+
+        tick();
+      }
+
+      function typePlainText({ target, text, afterTyping }) {
+        let index = 1;
+
+        const tick = () => {
+          target.textContent = text.slice(0, index);
+          index += 1;
+
+          if (index <= text.length) {
+            typingTimer = window.setTimeout(tick, 26);
+            return;
+          }
+
           afterTyping();
         };
 
