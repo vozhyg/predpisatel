@@ -220,19 +220,19 @@
 
       .screen__label {
         margin: 0;
-        padding-bottom: 7px;
+        padding-bottom: 4px;
         border-bottom: 1px solid rgba(79, 172, 255, 0.58);
         color: rgba(79, 172, 255, 0.62);
-        font-size: 0.68rem;
+        font-size: 0.58rem;
         font-weight: 700;
         letter-spacing: 0.04em;
-        line-height: 1.35;
+        line-height: 1.12;
         text-shadow: 0 0 8px var(--cyan-soft);
         box-shadow: 0 1px 0 rgba(79, 172, 255, 0.12);
       }
 
       .screen__text {
-        height: calc(100% - 24px);
+        height: calc(100% - 17px);
         color: var(--cyan);
         font-size: clamp(0.82rem, 3.42vw, 0.96rem);
         font-weight: 800;
@@ -379,13 +379,9 @@
         bottom: 13px;
         width: 48px;
         height: 49px;
-        padding: 16px 6px 0 13px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-end;
-        gap: 3px;
+        display: block;
+        overflow: hidden;
         background:
-          radial-gradient(circle at 78% 63%, rgba(79, 172, 255, 0.95) 0 4px, rgba(79, 172, 255, 0.22) 5px, transparent 11px),
           repeating-linear-gradient(106deg, transparent 0 10px, rgba(255, 255, 255, 0.08) 10px 12px, transparent 12px 18px),
           radial-gradient(circle at 80% 44%, rgba(83, 88, 77, 0.24) 0 10px, transparent 19px),
           linear-gradient(145deg, #23261f 0%, #121411 58%, #070807 100%);
@@ -397,26 +393,44 @@
       }
 
       .slot {
-        width: 5px;
-        height: 13px;
+        position: absolute;
+        bottom: 18px;
+        width: 4px;
+        height: 11px;
         background: #c68726;
         transform: skewX(-18deg);
         box-shadow: 0 0 6px rgba(198, 135, 38, 0.38);
       }
 
+      .slot:nth-child(1) {
+        left: 21px;
+      }
+
+      .slot:nth-child(2) {
+        left: 27px;
+      }
+
+      .slot:nth-child(3) {
+        left: 33px;
+      }
+
       .dot {
+        position: absolute;
+        left: 50%;
+        top: 67px;
         width: 6px;
         height: 6px;
-        margin-top: 15px;
+        margin: 0;
         border-radius: 50%;
         background: #050607;
+        transform: translateX(-50%);
       }
 
       .dot.is-lit {
         background: var(--cyan);
         box-shadow:
-          0 0 6px rgba(79, 172, 255, 0.95),
-          0 0 14px rgba(79, 172, 255, 0.46);
+          0 0 5px rgba(79, 172, 255, 0.92),
+          0 0 11px rgba(79, 172, 255, 0.4);
       }
 
       .pager__right-dock {
@@ -460,13 +474,13 @@
         position: absolute;
         left: 50%;
         top: 27px;
-        width: 20px;
-        height: 21px;
+        width: 15px;
+        height: 18px;
         background:
           repeating-linear-gradient(
             0deg,
-            #35362e 0 3px,
-            transparent 3px 9px
+            #35362e 0 2px,
+            transparent 2px 7px
           );
         transform: translateX(-50%);
       }
@@ -757,7 +771,7 @@
         }
 
         .screen__text {
-          height: calc(100% - 24px);
+          height: calc(100% - 17px);
           font-size: 0.82rem;
         }
 
@@ -789,12 +803,13 @@
           <span class="pager__scratch pager__scratch--three"></span>
           <span class="pager__chip pager__chip--left"></span>
           <span class="pager__chip pager__chip--right"></span>
-          <div class="pager__right-dock" aria-hidden="true"></div>
+          <div class="pager__right-dock" aria-hidden="true">
+            <span class="dot is-lit"></span>
+          </div>
           <div class="pager__module" aria-hidden="true">
             <span class="slot"></span>
             <span class="slot"></span>
             <span class="slot"></span>
-            <span class="dot is-lit"></span>
           </div>
           <span class="pager__right-frame" aria-hidden="true"></span>
           <span class="pager__right-corner" aria-hidden="true"></span>
@@ -1024,7 +1039,7 @@
             return;
           }
 
-          renderMessage(`${prefix}${text}\n`);
+          renderMessage(`${prefix}${text}`);
           afterTyping();
         };
 
